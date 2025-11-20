@@ -14,11 +14,7 @@ services:
       dockerfile: docker/Dockerfile.api
     depends_on:
       - mongodb
-    environment:
-      MONGO_URI: mongodb://mongodb:27017/grantbot
-      MONGO_DB_NAME: grantbot
-      OPENROUTER_KEY: your_openrouter_api_key_here
-      OPENROUTER_API_BASE: https://openrouter.ai/api/v1
-      OPENROUTER_MODEL: x-ai/grok-4.1-fast:free
+    env_file:
+      - ../.env
     ports:
       - "8000:8000"
