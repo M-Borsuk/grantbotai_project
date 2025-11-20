@@ -7,7 +7,7 @@ run:
 	poetry run uvicorn app.main:app --reload
 
 test:
-	poetry run pytest
+	poetry run pytest tests
 
 format:
 	poetry run isort app tests
