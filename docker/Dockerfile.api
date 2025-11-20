@@ -1,0 +1,36 @@
+# ---- Build stage: install dependencies with Poetry ----
+FROM python:3.12-slim as builder
+
+WORKDIR /app
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy poetry files first for better Docker cache usage
+COPY pyproject.toml poetry.lock* ./
+
+# Install runtime dependencies only, no dev packages
+RUN poetry config virtualenvs.create false \
+    && poetry install --only main --no-root
+
+# ---- Final stage ----
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# For fast inference on base models (optional for speed, not required)
+RUN apt-get update && apt-get install -y gcc
+
+# Copy Python dependencies from builder
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# Copy the actual application code
+COPY app ./app
+COPY .env.example .env.example
+
+# If you want code hot-reloading in development,
+# install uvicorn with '--reload'. For prod, use '--workers'
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

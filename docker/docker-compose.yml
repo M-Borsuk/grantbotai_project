@@ -1,0 +1,24 @@
+services:
+  mongodb:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mongo
+    environment:
+      MONGO_INITDB_DATABASE: grantbot
+    ports:
+      - "27017:27017"
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/grantbot
+      MONGO_DB_NAME: grantbot
+      OPENROUTER_KEY: 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
+      OPENROUTER_API_BASE: https://openrouter.ai/api/v1
+      OPENROUTER_MODEL: x-ai/grok-4.1-fast:free
+    ports:
+      - "8000:8000"
