@@ -12,11 +12,12 @@ class DummyCollection:
 
 def test_mongo_collections(monkeypatch):
     mongo = Mongo()
-    monkeypatch.setattr(mongo, "documents", DummyCollection())
+    monkeypatch.setattr(type(mongo), "documents", property(lambda self: DummyCollection()))
+
     docs = mongo.documents.find({})
     assert isinstance(docs, list)
     assert "id" in docs[0]
 
-    monkeypatch.setattr(mongo, "history", DummyCollection())
+    monkeypatch.setattr(type(mongo), "history", property(lambda self: DummyCollection()))
     res = mongo.history.insert_one({"foo": "bar"})
     assert res

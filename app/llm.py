@@ -18,7 +18,7 @@ class OpenRouterLLM:
         self.client = openai.OpenAI(api_key=key, base_url=base_url)
         self.model = model
 
-    def __fetch_candidates__(self, company_id: str) -> List[Dict]:
+    def _fetch_candidates(self, company_id: str) -> List[Dict]:
         """
         Fetch all documents for a given company_id from the database.
 
@@ -31,7 +31,7 @@ class OpenRouterLLM:
         logger.info(f"Fetched {len(docs)} documents for company_id={company_id}")
         return docs
 
-    def __retrieve_top_k__(self, input_text: str, candidates: List[Dict], k: int = 3) -> List[Dict]:
+    def _retrieve_top_k(self, input_text: str, candidates: List[Dict], k: int = 3) -> List[Dict]:
         """
         Return top-k docs most similar to input_text.
 
@@ -52,7 +52,7 @@ class OpenRouterLLM:
         top_idx = np.argsort(sims)[::-1][:k]
         return [candidates[i] for i in top_idx]
 
-    def __format_contexts_for_llm__(self, contexts: List[Dict]) -> str:
+    def _format_contexts_for_llm(self, contexts: List[Dict]) -> str:
         """
         Format context documents for LLM input, marking section types.
 
@@ -69,7 +69,7 @@ class OpenRouterLLM:
         return "\n\n".join(blocks)
 
     @staticmethod
-    def __system_prompt_for_section__(section_type: str) -> str:
+    def _system_prompt_for_section(section_type: str) -> str:
         """
         Create a system prompt tailored for generating a specific section type.
 
@@ -101,10 +101,10 @@ class OpenRouterLLM:
         Returns:
             dict: A dictionary with 'generated_text' and 'sources'.
         """
-        candidates = self.__fetch_candidates__(company_id)
-        top_contexts = self.__retrieve_top_k__(input_text, candidates, k=k)
-        context_block = self.__format_contexts_for_llm__(top_contexts)
-        system_prompt = self.__system_prompt_for_section__(section_type)
+        candidates = self._fetch_candidates(company_id)
+        top_contexts = self._retrieve_top_k(input_text, candidates, k=k)
+        context_block = self._format_contexts_for_llm(top_contexts)
+        system_prompt = self._system_prompt_for_section(section_type)
         user_prompt = f"User input: {input_text}\n\nContext snippets:\n{context_block}"
         logger.info(
             f"Generating section with system prompt: {system_prompt} and user prompt: {user_prompt}"

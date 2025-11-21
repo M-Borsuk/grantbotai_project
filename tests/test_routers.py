@@ -6,7 +6,7 @@ client = TestClient(app)
 
 
 def test_generate_section_endpoint(monkeypatch):
-    from app.routers.generate import openrouter_llm
+    from app.llm import openrouter_llm
 
     monkeypatch.setattr(
         openrouter_llm,
