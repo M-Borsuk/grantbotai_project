@@ -1,13 +1,14 @@
-# tests/test_db.py
-
 from app.db import Mongo
+
 
 class DummyCollection:
     def find(self, query):
         return [{"id": "testdoc", "company_id": "123", "text": "X"}]
+
     def insert_one(self, doc):
         self.doc = doc
         return True
+
 
 def test_mongo_collections(monkeypatch):
     mongo = Mongo()

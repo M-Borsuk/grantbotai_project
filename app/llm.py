@@ -81,8 +81,10 @@ class OpenRouterLLM:
         return (
             f"You are an expert at writing grant application document sections. "
             f"The user will ask you to generate the [{section_type.upper()}] section. "
-            f"Use the provided context snippets (labeled with their original section types) to generate a coherent, comprehensive [{section_type.upper()}] section. "
-            "Be concise and make sure to use factual information from the context whenever possible."
+            f"Use the provided context snippets (labeled with their original section types) "
+            f"to generate a coherent, comprehensive [{section_type.upper()}] section. "
+            "Be concise and make sure to use factual information "
+            "from the context whenever possible."
         )
 
     def generate_section(
@@ -137,6 +139,7 @@ class OpenRouterLLM:
             max_tokens=max_tokens,
         )
         return response.choices[0].message.content.strip()
+
 
 openrouter_llm = OpenRouterLLM(
     key=settings.openrouter_key,
